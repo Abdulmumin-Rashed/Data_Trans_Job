@@ -1,0 +1,82 @@
+﻿@using Data_Trans_Job.Areas.Posts.ViewModel
+@{
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Create";
+}
+
+@model PostViewModel
+
+<h2>Create New Post</h2>
+
+@* @if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+} *@
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+<form asp-action="Create" method="post" class="create-form">
+
+    <div class="form-group">
+        <label asp-for="Title" class="control-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger error-message" style="color: red;"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Content" class="control-label">Content</label>
+        <textarea asp-for="Content" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Content" class="text-danger error-message" style="color: red;"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+<!-- Include SweetAlert script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(function () {
+        $('.create-form').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                            timer: 700, // Delay in milliseconds
+                            showConfirmButton: false
+                        }).then(function () {
+                            window.location.href = '@Url.Action("Index", "Post")';
+                        });
+                    } else {
+                        // Display validation errors
+                        var errorMessage = "Please fix the following errors:<br>";
+                        $.each(response.errors, function (index, error) {
+                            errorMessage += "<span style='color: red;'>" + error + "</span><br>";
+                        });
+
+                        // Embed TempData error message directly into the script
+                        var tempDataErrorMessage = '@TempData["ErrorMessage"]';
+                        if (tempDataErrorMessage !== "") {
+                            errorMessage += "<span style='color: red;'>" + tempDataErrorMessage + "</span>";
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: errorMessage, // Set the error message as the title
+                        
+                            text: response.message
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>

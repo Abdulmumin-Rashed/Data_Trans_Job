@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@using Data_Trans_Job.Models
+@model List<Post>
+
+@{
+    ViewData["Title"] = "Posts";
+    Layout = "_Layout";
+}
+
+<form id="search-form">
+    <div class="input-group">
+
+        @*         <input type="text" id="fromDate" name="fromDate" class="form-control" placeholder="Search by Date" />
+        *@        <input type="text" id="searchTerm" name="searchTerm" class="form-control" placeholder="Search by title" />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+<div id="post-table">
+    @Html.Partial("_PostsTable", Model)
+</div>
+
+
+
+@section scripts {
+    <script>
+
+
+
+        $(function () {
+            $('#search-form').submit(function (event) {
+                event.preventDefault();
+
+                // var fromDate = $('#fromDate').val();
+
+                var searchTerm = $('#searchTerm').val();
+
+                $.ajax({
+                    url: '@Url.Action("Search", "Post")',
+                    type: 'GET',
+                    data: { searchTerm: searchTerm },
+                    success: function (result) {
+                        $('#post-table').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+}

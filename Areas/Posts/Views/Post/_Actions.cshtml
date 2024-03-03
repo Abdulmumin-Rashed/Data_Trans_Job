@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@using Data_Trans_Job.Models
+@model Post
+
+@{
+    ViewData["Title"] = "Actions";
+
+
+}
+
+
+
+
+@if (User.IsInRole("Admin") || User.IsInRole("Super_Admin"))
+{
+    <div class="btn-group">
+        <a href="@Url.Action("Edit", "Post", new { id = Model.Id })" class="btn btn-primary">Edit</a>
+        <a href="@Url.Action("Delete", "Post", new { id = Model.Id })" class="delete-link btn btn-danger">Delete</a>
+    </div>
+}
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $('.delete-link').on('click', function (e) {
+                e.preventDefault();
+                var deleteUrl = $(this).attr('href');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This action cannot be undone!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Delete',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = deleteUrl;
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,47 @@
+﻿@using Data_Trans_Job.Models
+@{
+    Layout = "_Layout";
+}
+
+@model AppUser
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">User Details</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">First Name</dt>
+                        <dd class="col-sm-8">@Model.FirstName</dd>
+
+                        <dt class="col-sm-4">Last Name</dt>
+                        <dd class="col-sm-8">@Model.LastName</dd>
+
+                        <dt class="col-sm-4">Address</dt>
+                        <dd class="col-sm-8">@Model.Address</dd>
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+                      
+                        
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center">
+                        @if (!string.IsNullOrEmpty(Model.UrlImage))
+                        {
+                            <img src="/User_Images/@Model.UrlImage" class="rounded-circle" style="width: 150px; height: 150px;" alt="User Image" />
+                        }
+                        else
+                        {
+                            <img src="/User_Images/noimage.png" class="rounded-circle" style="width: 150px; height: 150px;" alt="User Image" />
+
+                            
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" onclick="history.back()" class="btn btn-secondary">Back</button>
+</div>

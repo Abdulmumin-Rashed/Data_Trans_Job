@@ -1,0 +1,132 @@
+﻿@using Data_Trans_Job.Areas.Admin.ModelView
+@model CreateUserViewModel
+@{
+    Layout = "_Layout";
+}
+<h2>Create User</h2>
+
+<form method="post" asp-action="Create" class="create-form">
+    <div class="form-group">
+        <label>Username:</label>
+        <input type="text" asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>First Name:</label>
+        <input type="text" asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Last Name:</label>
+        <input type="text" asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+
+    </div>
+    <div class="form-group">
+        <label>Address:</label>
+        <input type="text" asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+
+    </div>
+    <div class="form-group">
+        <label>Password:</label>
+        <input type="password" asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+
+    </div>
+    <div class="form-group">
+        <label>Roles:</label>
+        <br />
+        @foreach (var role in Model.AvailableRoles)
+        {
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="SelectedRoles" value="@role" class="form-check-input" />
+                <label class="form-check-label">@role</label>
+                <span asp-validation-for="SelectedRoles" class="text-danger"></span>
+            </div>
+        }
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+
+<!-- Include SweetAlert script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@* <script>
+    $(function () {
+        $('.create-form').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                            timer: 500, // Delay in milliseconds
+                            showConfirmButton: false
+                        }).then(function () {
+                            window.location.href = '@Url.Action("Index", "Admin")';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script> *@
+
+
+
+<script>
+    $(function () {
+        $('.create-form').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                            timer: 700, // Delay in milliseconds
+                            showConfirmButton: false
+                        }).then(function () {
+                            window.location.href = '@Url.Action("Index", "Admin")';
+                        });
+                    } else {
+                        // Display validation errors
+                        var errorMessage = "Please fix the following errors:<br>";
+                        $.each(response.errors, function (index, error) {
+                            errorMessage += "<span style='color: red;'>" + error + "</span><br>";
+                        });
+
+                        // Embed TempData error message directly into the script
+                       
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: errorMessage, // Set the error message as the title
+
+                            text: response.message
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+

@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@using Data_Trans_Job.Models
+@model List<Post>
+
+
+<table class="table">
+    <!-- Table header -->
+    <thead>
+        <tr>
+            <th>Post</th>
+            <th>Title</th>
+            <th>User</th>
+            <th>Comments</th>
+            <th>Created Date</th>
+            <th>Add-Comments</th>
+            @if (User.IsInRole("Admin") || User.IsInRole("Super_Admin"))
+            {
+                <th>Actions</th>
+            }
+        </tr>
+    </thead>
+    <!-- Table body (to be updated by Ajax call) -->
+    <tbody>
+        @foreach (var post in Model)
+        {
+            <tr>
+                <td>@post.Content</td>
+                <td>@post.Title</td>
+                <td>@post.User.UserName</td>
+                <td>
+                    @if (post.Comments.Any())
+                    {
+                        <ul>
+                            @foreach (var comment in post.Comments)
+                            {
+                                <li>@comment.Text</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No comments</p>
+                    }
+                </td>
+                <td>@post.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>
+                    <form asp-controller="Post" asp-action="AddComment" method="post">
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <div class="input-group">
+                            <textarea name="commentText" placeholder="Add a comment" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">+</button>
+                    </form>
+                </td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Super_Admin"))
+                {
+                    <td>
+                        @Html.Partial("_Actions", (Post)post)
+                    </td>
+                }
+
+            </tr>
+        }
+    </tbody>
+</table>
