@@ -1,6 +1,9 @@
-﻿using Data_Trans_Job.IService.IRepositories;
+﻿using Dapper;
+using Data_Trans_Job.Data;
+using Data_Trans_Job.IService.IRepositories;
 using Data_Trans_Job.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data_Trans_Job.Service.Repositories
@@ -10,16 +13,54 @@ namespace Data_Trans_Job.Service.Repositories
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _dbContext;
         public AdminRepository(UserManager<AppUser> userManager, 
             RoleManager<IdentityRole> roleManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IConfiguration configuration
+            , ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
+            _dbContext = dbContext;
         }
 
+        public async Task<List<AppUser>> GetUsersWithRecentPosts()
+        {
+            string connectionData = _configuration.GetConnectionString("DefaultConnection");
+            try
+            {
+                DateTime thirtyDaysAgo = DateTime.Now.AddDays(-30);
 
+                // Using Entity Framework Core to query recent posts
+                var usersWithRecentPostsEF = await _dbContext.Users
+                    .Include(u => u.Posts)
+                    .Where(u => u.Posts.Any(p => p.CreatedAt >= thirtyDaysAgo))
+                    .ToListAsync();
+
+                // Using Dapper to query recent posts
+                using (var connection = new SqlConnection(connectionData))
+                {
+                    connection.Open();
+
+                    string query = @" SELECT DISTINCT u.*
+                                   FROM AspNetUsers u
+                                   INNER JOIN Posts p ON u.Id = p.UserId
+                                   WHERE p.CreatedAt >= @ThirtyDaysAgo";
+
+                    var usersWithRecentPostsDapper = await connection.QueryAsync<AppUser>(query, new { ThirtyDaysAgo = thirtyDaysAgo });
+
+                    return usersWithRecentPostsDapper.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                throw;
+            }
+        }
 
         public async Task<IdentityResult> CreateUserAsync(AppUser user, string password, List<string> roleNames)
         {

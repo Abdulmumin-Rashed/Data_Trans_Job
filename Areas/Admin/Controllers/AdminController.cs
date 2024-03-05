@@ -78,7 +78,11 @@ namespace Data_Trans_Job.Areas.Admin.Controllers
        
         }
 
-
+        public async Task<IActionResult> GetUsersWithRecentPosts()
+        {
+            var usersWithRecentPosts = await _unitOfWork.Admin.GetUsersWithRecentPosts();
+            return View(usersWithRecentPosts);
+        }
 
 
         [HttpGet]

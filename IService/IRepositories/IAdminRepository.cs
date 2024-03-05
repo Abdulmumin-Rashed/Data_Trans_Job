@@ -11,7 +11,7 @@ namespace Data_Trans_Job.IService.IRepositories
         Task<IdentityResult> AddUserRoleAsync(AppUser user, IEnumerable<string> roles);
         Task<IdentityResult> CreateUserAsync(AppUser user, string password, List<string> roleNames);
         Task<AppUser> GetUserByEmail(string email);
-
+        Task<List<AppUser>> GetUsersWithRecentPosts();
         Task<IEnumerable<IdentityRole>> GetAllRolesAsync();
         Task<List<AppUser>> GetAllUsersWithRolesAsync();
         Task<List<string>> GetRolesAsync(AppUser user);
