@@ -84,7 +84,7 @@ namespace Data_Trans_Job.Areas.Admin.Controllers
             return View(usersWithRecentPosts);
         }
 
-
+        [Authorize(Roles = "Super_Admin")]
         [HttpGet]
         public async Task<IActionResult> Edit(string userId)
         {
@@ -114,7 +114,7 @@ namespace Data_Trans_Job.Areas.Admin.Controllers
 
             return View(viewModel);
         }
-
+        [Authorize(Roles = "Super_Admin")]
         [HttpPost]
         public async Task<IActionResult> Edit(CreateUserViewModel viewModel)
         {
@@ -171,8 +171,8 @@ namespace Data_Trans_Job.Areas.Admin.Controllers
             }
         }
 
-
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Super_Admin")]
+     
         public async Task<IActionResult> Delete(string userId)
         {
             var user = await _unitOfWork.Admin.GetUserById(userId);

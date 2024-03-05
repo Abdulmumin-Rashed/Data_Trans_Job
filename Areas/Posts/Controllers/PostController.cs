@@ -5,6 +5,7 @@ using Data_Trans_Job.Service.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Data_Trans_Job.Areas.Posts.ViewModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 namespace Data_Trans_Job.Areas.Posts.Controllers
 {
     [Area("Posts")]
@@ -83,7 +84,7 @@ namespace Data_Trans_Job.Areas.Posts.Controllers
             return Json(new { success = false, errors = errors });
         }
 
-
+        [Authorize(Roles = "Super_Admin")]
 
         public async Task<IActionResult> Delete(int id)
         {
